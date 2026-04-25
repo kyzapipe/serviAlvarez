@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ServiAlvarez – Servicio Técnico</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:    #FAF8F4;
+      --warm:     #F2EDE4;
+      --accent:   #2A7FBF;
+      --accent2:  #E8F4FD;
+      --text:     #1C2B3A;
+      --muted:    #7A8A9A;
+      --card-bg:  #FFFFFF;
+      --shadow:   0 8px 40px rgba(42,127,191,.10);
+      --shadow-lg:0 20px 60px rgba(42,127,191,.15);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE TEXTURE overlay ── */
+    body::before {
+      content:'';
+      position:fixed; inset:0; pointer-events:none; z-index:0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+      opacity:.4;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top:0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.1rem 6%;
+      background: rgba(250,248,244,.88);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(42,127,191,.08);
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.55rem; font-weight: 700;
+      color: var(--accent); letter-spacing: -.5px;
+    }
+    .logo span { color: var(--text); }
+    nav ul { list-style:none; display:flex; gap:2rem; }
+    nav ul a {
+      text-decoration:none; color:var(--muted);
+      font-size:.9rem; font-weight:500; letter-spacing:.3px;
+      transition: color .2s;
+    }
+    nav ul a:hover { color: var(--accent); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 92vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 5rem 6% 3rem;
+      overflow: hidden;
+    }
+    .hero-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+    }
+    .blob1 { width:500px; height:500px; background:rgba(42,127,191,.08); top:-100px; right:-80px; }
+    .blob2 { width:380px; height:380px; background:rgba(42,127,191,.05); bottom:-60px; left:-60px; }
+
+    /* ── HERO BACKGROUND SVG ── */
+    .hero-bg-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: .13;
+      filter: blur(1.5px);
+    }
+
+    .hero > *:not(.hero-blob):not(.hero-bg-svg) { position:relative; z-index:1; }
+
+    .hero-badge {
+      display:inline-block;
+      background: var(--accent2);
+      color: var(--accent);
+      font-size:.78rem; font-weight:600; letter-spacing:1.5px;
+      text-transform: uppercase;
+      padding: .4rem 1.1rem; border-radius:50px;
+      margin-bottom:1.6rem;
+      animation: fadeUp .7s ease both;
+    }
+    .hero h1 {
+      font-family:'Playfair Display', serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 700; line-height: 1.1;
+      color: var(--text);
+      max-width: 780px;
+      animation: fadeUp .8s .1s ease both;
+    }
+    .hero h1 em { font-style:normal; color:var(--accent); }
+    .hero p {
+      margin-top:1.4rem;
+      font-size:1.1rem; color:var(--muted); line-height:1.7;
+      max-width:520px;
+      animation: fadeUp .8s .2s ease both;
+    }
+    .hero-cta {
+      margin-top: 2.5rem;
+      display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;
+      animation: fadeUp .8s .3s ease both;
+    }
+    .btn-primary {
+      background: var(--accent); color:#fff;
+      padding:.85rem 2rem; border-radius:50px;
+      font-size:.95rem; font-weight:600; text-decoration:none;
+      box-shadow: 0 6px 24px rgba(42,127,191,.35);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .btn-primary:hover { transform:translateY(-2px); box-shadow:0 10px 32px rgba(42,127,191,.45); }
+    .btn-ghost {
+      border:1.5px solid rgba(42,127,191,.3); color:var(--accent);
+      padding:.85rem 2rem; border-radius:50px;
+      font-size:.95rem; font-weight:600; text-decoration:none;
+      transition: background .2s, border-color .2s;
+    }
+    .btn-ghost:hover { background:var(--accent2); border-color:var(--accent); }
+
+    /* ── SECCIÓN SERVICES ── */
+    section { position:relative; z-index:1; }
+
+    .section-title {
+      text-align:center;
+      margin-bottom: 3.5rem;
+    }
+    .section-title small {
+      display:block; font-size:.75rem; font-weight:600; letter-spacing:2px;
+      text-transform:uppercase; color:var(--accent); margin-bottom:.5rem;
+    }
+    .section-title h2 {
+      font-family:'Playfair Display', serif;
+      font-size:clamp(2rem,4vw,3rem); font-weight:700;
+      color:var(--text); line-height:1.2;
+    }
+
+    .services { padding: 6rem 6%; }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
+      gap: 1.8rem;
+    }
+    .gallery-card-wrapper {
+      margin-top: 2.8rem;
+      display: flex;
+      justify-content: center;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 2.2rem 1.8rem;
+      box-shadow: var(--shadow);
+      transition: transform .3s, box-shadow .3s;
+      border: 1px solid rgba(42,127,191,.06);
+      position: relative; overflow: hidden;
+    }
+    .card::before {
+      content:'';
+      position:absolute; top:0; left:0; right:0; height:3px;
+      background: linear-gradient(90deg,var(--accent),#67B8F0);
+      opacity:0; transition:opacity .3s;
+    }
+    .card:hover { transform:translateY(-8px); box-shadow:var(--shadow-lg); }
+    .card:hover::before { opacity:1; }
+    .card-icon {
+      font-size:2.4rem; margin-bottom:1.2rem;
+      display:inline-block;
+      background:var(--accent2); padding:.7rem; border-radius:14px;
+    }
+    .card h3 {
+      font-family:'Playfair Display',serif;
+      font-size:1.2rem; font-weight:600; color:var(--text);
+      margin-bottom:.6rem;
+    }
+    .card p { font-size:.9rem; color:var(--muted); line-height:1.65; }
+
+    /* ── WHY US ── */
+    .why { padding: 5rem 6%; background: var(--warm); }
+    .why-inner {
+      display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center;
+    }
+    .why-text h2 {
+      font-family:'Playfair Display',serif;
+      font-size:clamp(1.8rem,3.5vw,2.8rem); font-weight:700;
+      line-height:1.2; margin-bottom:1.2rem;
+    }
+    .why-text p { color:var(--muted); line-height:1.75; font-size:.97rem; margin-bottom:1rem; }
+    .why-stats {
+      display:grid; grid-template-columns:1fr 1fr; gap:1.2rem;
+    }
+    .stat-card {
+      background:var(--card-bg);
+      border-radius:16px; padding:1.5rem;
+      box-shadow:var(--shadow);
+      text-align:center;
+      transition:transform .3s;
+    }
+    .stat-card:hover { transform:translateY(-4px); }
+    .stat-card .num {
+      font-family:'Playfair Display',serif;
+      font-size:2.5rem; font-weight:700; color:var(--accent);
+    }
+    .stat-card .label {
+      font-size:.82rem; color:var(--muted); margin-top:.2rem; font-weight:500;
+    }
+
+    /* ── PROCESS ── */
+    .process { padding:6rem 6%; }
+    .steps {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      gap:1.5rem; margin-top:1rem;
+    }
+    .step {
+      background:var(--card-bg); border-radius:18px; padding:2rem 1.6rem;
+      box-shadow:var(--shadow); text-align:center;
+      transition:transform .3s, box-shadow .3s;
+    }
+    .step:hover { transform:translateY(-6px); box-shadow:var(--shadow-lg); }
+    .step-num {
+      display:inline-flex; align-items:center; justify-content:center;
+      width:48px; height:48px; border-radius:50%;
+      background:var(--accent2); color:var(--accent);
+      font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700;
+      margin-bottom:1rem;
+    }
+    .step h3 { font-weight:600; font-size:1rem; margin-bottom:.4rem; color:var(--text); }
+    .step p { font-size:.85rem; color:var(--muted); line-height:1.6; }
+
+    /* ── FOOTER ── */
+    footer {
+      background:var(--text); color:#fff;
+      padding:3.5rem 6% 2rem;
+    }
+    .footer-inner {
+      display:grid; grid-template-columns:1.5fr 1fr 1fr;
+      gap:3rem; margin-bottom:2.5rem;
+    }
+    .footer-brand .logo { color:#67B8F0; font-size:1.5rem; }
+    .footer-brand .logo span { color:#fff; }
+    .footer-brand p { margin-top:.8rem; color:rgba(255,255,255,.55); font-size:.88rem; line-height:1.7; }
+    footer h4 { font-size:.85rem; font-weight:600; letter-spacing:1px;
+      text-transform:uppercase; color:rgba(255,255,255,.5); margin-bottom:1rem; }
+    footer ul { list-style:none; }
+    footer ul li { margin-bottom:.55rem; }
+    footer ul a { color:rgba(255,255,255,.72); text-decoration:none; font-size:.9rem;
+      transition:color .2s; }
+    footer ul a:hover { color:#67B8F0; }
+    .footer-contact p { color:rgba(255,255,255,.72); font-size:.9rem; margin-bottom:.55rem; }
+    .footer-contact a { color:rgba(255,255,255,.72); text-decoration:none; transition:color .2s; }
+    .footer-contact a:hover { color:#67B8F0; }
+    .footer-bottom {
+      border-top:1px solid rgba(255,255,255,.1);
+      padding-top:1.5rem; text-align:center;
+      color:rgba(255,255,255,.35); font-size:.82rem;
+    }
+
+    /* ── FLOATING BUTTONS ── */
+    .fab-group {
+      position:fixed; bottom:2rem; right:1.8rem;
+      display:flex; flex-direction:column; align-items:center; gap:.75rem;
+      z-index:999;
+    }
+
+    .fab {
+      display:flex; align-items:center; justify-content:center;
+      width:52px; height:52px; border-radius:50%;
+      text-decoration:none;
+      box-shadow:0 4px 20px rgba(0,0,0,.18);
+      transition: transform .25s, box-shadow .25s;
+    }
+    .fab:hover { transform:translateY(-3px) scale(1.07); box-shadow:0 8px 28px rgba(0,0,0,.25); }
+
+    .fab-wa  { background:#25D366; }
+    .fab-ig  { background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); }
+    .fab-fb  { background:#1877F2; }
+
+    .fab svg { width:26px; height:26px; fill:#fff; }
+
+    /* WhatsApp pulsing ring */
+    .fab-wa::before {
+      content:'';
+      position:absolute; width:52px; height:52px; border-radius:50%;
+      background:#25D366; opacity:.35;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%   { transform:scale(1);   opacity:.35; }
+      70%  { transform:scale(1.65);opacity:0; }
+      100% { transform:scale(1);   opacity:0; }
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(24px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:768px){
+      nav ul { display:none; }
+      .why-inner { grid-template-columns:1fr; gap:2.5rem; }
+      .footer-inner { grid-template-columns:1fr; gap:2rem; }
+    }
+
+    /* ── TARJETA GALERÍA ── */
+    .card-gallery {
+      cursor: pointer;
+      background: linear-gradient(135deg, #ffffff 60%, var(--accent2) 100%);
+      border-radius: 24px;
+      padding: 2.8rem 3rem;
+      box-shadow: 0 12px 50px rgba(42,127,191,.18);
+      transition: transform .3s, box-shadow .3s;
+      border: 1.5px solid rgba(42,127,191,.2);
+      position: relative; overflow: hidden;
+      width: 100%; max-width: 560px;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+    }
+    .card-gallery::before {
+      content:'';
+      position:absolute; top:0; left:0; right:0; height:4px;
+      background: linear-gradient(90deg,var(--accent),#67B8F0,var(--accent));
+      background-size: 200% 100%;
+      animation: shimmer 3s linear infinite;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .card-gallery::after {
+      content:'';
+      position:absolute; bottom:-50px; right:-50px;
+      width:180px; height:180px; border-radius:50%;
+      background:radial-gradient(circle,rgba(42,127,191,.08),transparent 70%);
+      pointer-events:none;
+    }
+    .card-gallery:hover { transform:translateY(-10px); box-shadow:0 24px 70px rgba(42,127,191,.28); }
+    .card-gallery .card-icon {
+      display:inline-flex; align-items:center; justify-content:center;
+      background: linear-gradient(135deg,var(--accent2),#d0eaf8);
+      padding:1.1rem; border-radius:20px; font-size:2.8rem;
+      box-shadow: 0 4px 18px rgba(42,127,191,.15);
+      margin-bottom:1.4rem;
+    }
+    .card-gallery h3 {
+      font-family:'Playfair Display',serif;
+      font-size:1.5rem; font-weight:700; color:var(--text);
+      margin-bottom:.7rem;
+    }
+    .card-gallery p { font-size:.95rem; color:var(--muted); line-height:1.7; max-width:380px; }
+    .card-gallery .gallery-hint {
+      display:inline-flex; align-items:center; gap:.5rem;
+      margin-top:1.4rem; font-size:.85rem; font-weight:700;
+      color:#fff; letter-spacing:.5px;
+      background: var(--accent);
+      padding:.65rem 1.6rem; border-radius:50px;
+      box-shadow: 0 4px 16px rgba(42,127,191,.35);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .card-gallery:hover .gallery-hint { transform:translateY(-2px); box-shadow:0 8px 24px rgba(42,127,191,.45); }
+    .card-gallery .gallery-hint svg { width:15px; height:15px; }
+
+    /* ── MODAL GALERÍA ── */
+    .gallery-overlay {
+      display:none;
+      position:fixed; inset:0; z-index:1000;
+      background:rgba(28,43,58,.85);
+      backdrop-filter:blur(10px);
+      animation:fadeIn .25s ease;
+    }
+    .gallery-overlay.open { display:flex; align-items:center; justify-content:center; padding:1.5rem; }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+    .gallery-modal {
+      background:var(--card-bg);
+      border-radius:24px;
+      width:100%; max-width:860px;
+      max-height:90vh;
+      overflow-y:auto;
+      box-shadow:0 40px 100px rgba(42,127,191,.25);
+      animation:slideUp .3s ease;
+    }
+    @keyframes slideUp { from{transform:translateY(30px);opacity:0} to{transform:translateY(0);opacity:1} }
+
+    .gallery-header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:1.8rem 2rem 1rem;
+      border-bottom:1px solid rgba(42,127,191,.08);
+    }
+    .gallery-header h3 {
+      font-family:'Playfair Display',serif;
+      font-size:1.5rem; font-weight:700; color:var(--text);
+    }
+    .gallery-header p { font-size:.85rem; color:var(--muted); margin-top:.2rem; }
+    .btn-close-gallery {
+      background:var(--accent2); border:none; cursor:pointer;
+      width:38px; height:38px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      color:var(--accent); transition:background .2s, transform .2s;
+    }
+    .btn-close-gallery:hover { background:var(--accent); color:#fff; transform:rotate(90deg); }
+    .btn-close-gallery svg { width:18px; height:18px; }
+
+    .gallery-body { padding:1.5rem 2rem 2rem; }
+
+    /* Upload zone */
+    .upload-zone {
+      border:2px dashed rgba(42,127,191,.3);
+      border-radius:16px;
+      padding:2rem;
+      text-align:center;
+      cursor:pointer;
+      transition:border-color .2s, background .2s;
+      margin-bottom:1.5rem;
+      background:var(--accent2);
+    }
+    .upload-zone:hover { border-color:var(--accent); background:rgba(42,127,191,.07); }
+    .upload-zone svg { width:40px; height:40px; color:var(--accent); margin-bottom:.8rem; }
+    .upload-zone p { font-size:.9rem; color:var(--muted); }
+    .upload-zone strong { color:var(--accent); }
+    #gallery-file-input { display:none; }
+
+    /* Grid de fotos */
+    .gallery-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+      gap:1rem;
+    }
+    .gallery-item {
+      position:relative; border-radius:14px; overflow:hidden;
+      aspect-ratio:1; cursor:pointer;
+      box-shadow:0 4px 16px rgba(42,127,191,.1);
+      transition:transform .2s, box-shadow .2s;
+      background:var(--warm);
+    }
+    .gallery-item:hover { transform:scale(1.03); box-shadow:0 8px 28px rgba(42,127,191,.2); }
+    .gallery-item img { width:100%; height:100%; object-fit:cover; display:block; }
+
+    /* BOTON DE ELIMINAR FOTOS */
+    /*.gallery-item-del {
+      position:absolute; top:6px; right:6px;
+      background:rgba(28,43,58,.7); border:none; cursor:pointer;
+      width:28px; height:28px; border-radius:50%;
+      display:none; align-items:center; justify-content:center;
+      color:#fff; transition:background .2s;
+    }
+    .gallery-item-del svg { width:14px; height:14px; }
+    .gallery-item:hover .gallery-item-del { display:flex; }
+    .gallery-item-del:hover { background:rgba(220,40,40,.85); }
+    .gallery-empty {
+      text-align:center; padding:1.5rem 0;
+      color:var(--muted); font-size:.9rem;
+    }
+
+    /* Lightbox */
+    .lightbox {
+      display:none;
+      position:fixed; inset:0; z-index:1100;
+      background:rgba(10,18,28,.94);
+      align-items:center; justify-content:center;
+    }
+    .lightbox.open { display:flex; }
+    .lightbox img {
+      max-width:90vw; max-height:88vh;
+      border-radius:12px;
+      box-shadow:0 20px 60px rgba(0,0,0,.5);
+      object-fit:contain;
+    }
+    .lightbox-close {
+      position:absolute; top:1.4rem; right:1.4rem;
+      background:rgba(255,255,255,.12); border:none; cursor:pointer;
+      width:44px; height:44px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      color:#fff; transition:background .2s;
+    }
+    .lightbox-close:hover { background:rgba(255,255,255,.25); }
+    .lightbox-close svg { width:22px; height:22px; }
+    .lightbox-nav {
+      position:absolute; top:50%; transform:translateY(-50%);
+      background:rgba(255,255,255,.12); border:none; cursor:pointer;
+      width:48px; height:48px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      color:#fff; transition:background .2s;
+    }
+    .lightbox-nav:hover { background:rgba(255,255,255,.25); }
+    .lightbox-nav.prev { left:1.4rem; }
+    .lightbox-nav.next { right:1.4rem; }
+    .lightbox-nav svg { width:22px; height:22px; }
+    .lightbox-counter {
+      position:absolute; bottom:1.5rem; left:50%; transform:translateX(-50%);
+      color:rgba(255,255,255,.6); font-size:.85rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="logo">Servi<span>Alvarez</span></div>
+  <ul>
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#nosotros">Nosotros</a></li>
+    <li><a href="#proceso">¿Cómo funciona?</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-blob blob1"></div>
+  <div class="hero-blob blob2"></div>
+
+  <!-- Fondo electrodomésticos SVG -->
+  <svg class="hero-bg-svg" viewBox="0 0 1400 800" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+
+    <!-- ═══ HELADERA (izquierda) ═══ -->
+    <g transform="translate(60,80)">
+      <!-- cuerpo -->
+      <rect x="0" y="0" width="180" height="420" rx="14" fill="#2A7FBF" stroke="#1a5a8a" stroke-width="2"/>
+      <!-- línea divisoria freezer/heladera -->
+      <rect x="0" y="130" width="180" height="4" fill="#1a5a8a"/>
+      <!-- manija freezer -->
+      <rect x="155" y="50" width="10" height="40" rx="5" fill="#1a5a8a"/>
+      <!-- manija heladera -->
+      <rect x="155" y="200" width="10" height="60" rx="5" fill="#1a5a8a"/>
+      <!-- estante 1 -->
+      <rect x="14" y="190" width="152" height="4" rx="2" fill="#1a5a8a" opacity=".5"/>
+      <!-- estante 2 -->
+      <rect x="14" y="270" width="152" height="4" rx="2" fill="#1a5a8a" opacity=".5"/>
+      <!-- estante 3 -->
+      <rect x="14" y="350" width="152" height="4" rx="2" fill="#1a5a8a" opacity=".5"/>
+      <!-- logo círculo -->
+      <circle cx="50" cy="80" r="16" fill="#1a5a8a" opacity=".6"/>
+      <!-- termómetro -->
+      <rect x="30" y="155" width="6" height="28" rx="3" fill="#fff" opacity=".4"/>
+      <circle cx="33" cy="185" r="5" fill="#fff" opacity=".4"/>
+    </g>
+
+    <!-- ═══ LAVARROPAS (centro-izquierda) ═══ -->
+    <g transform="translate(320,200)">
+      <!-- cuerpo -->
+      <rect x="0" y="0" width="190" height="200" rx="14" fill="#3A90CC" stroke="#2266a0" stroke-width="2"/>
+      <!-- panel superior -->
+      <rect x="0" y="0" width="190" height="44" rx="14" fill="#2266a0"/>
+      <rect x="0" y="30" width="190" height="14" fill="#2266a0"/>
+      <!-- perilla -->
+      <circle cx="40" cy="22" r="12" fill="#1a5a8a" stroke="#fff" stroke-width="1.5" opacity=".7"/>
+      <circle cx="40" cy="22" r="5" fill="#fff" opacity=".5"/>
+      <!-- display -->
+      <rect x="70" y="10" width="60" height="24" rx="4" fill="#1a5a8a" opacity=".6"/>
+      <rect x="76" y="16" width="12" height="12" rx="2" fill="#67B8F0" opacity=".5"/>
+      <rect x="92" y="16" width="12" height="12" rx="2" fill="#67B8F0" opacity=".3"/>
+      <rect x="108" y="16" width="12" height="12" rx="2" fill="#67B8F0" opacity=".2"/>
+      <!-- tambor (vista frontal) -->
+      <circle cx="95" cy="130" r="70" fill="#2266a0" stroke="#1a5a8a" stroke-width="3"/>
+      <circle cx="95" cy="130" r="58" fill="#1a5a8a" opacity=".5"/>
+      <circle cx="95" cy="130" r="44" fill="#3A90CC" opacity=".4"/>
+      <!-- perforaciones tambor -->
+      <circle cx="75" cy="110" r="5" fill="#1a5a8a" opacity=".7"/>
+      <circle cx="95" cy="105" r="5" fill="#1a5a8a" opacity=".7"/>
+      <circle cx="115" cy="110" r="5" fill="#1a5a8a" opacity=".7"/>
+      <circle cx="120" cy="130" r="5" fill="#1a5a8a" opacity=".7"/>
+      <circle cx="115" cy="150" r="5" fill="#1a5a8a" opacity=".7"/>
+      <circle cx="95" cy="155" r="5" fill="#1a5a8a" opacity=".7"/>
+      <circle cx="75" cy="150" r="5" fill="#1a5a8a" opacity=".7"/>
+      <circle cx="70" cy="130" r="5" fill="#1a5a8a" opacity=".7"/>
+      <!-- manija puerta -->
+      <rect x="72" y="118" width="46" height="24" rx="12" fill="none" stroke="#67B8F0" stroke-width="2.5" opacity=".5"/>
+      <!-- patas -->
+      <rect x="20" y="196" width="20" height="16" rx="4" fill="#2266a0"/>
+      <rect x="150" y="196" width="20" height="16" rx="4" fill="#2266a0"/>
+    </g>
+
+    <!-- ═══ AIRE ACONDICIONADO split (centro-arriba) ═══ -->
+    <g transform="translate(620,40)">
+      <!-- unidad interior -->
+      <rect x="0" y="0" width="280" height="90" rx="12" fill="#2A7FBF" stroke="#1a5a8a" stroke-width="2"/>
+      <!-- rejilla de salida de aire -->
+      <rect x="16" y="60" width="248" height="8" rx="2" fill="#1a5a8a" opacity=".5"/>
+      <!-- líneas de rejilla -->
+      <line x1="16" y1="60" x2="16" y2="68" stroke="#1a5a8a" stroke-width="1" opacity=".4"/>
+      <line x1="48" y1="60" x2="48" y2="68" stroke="#1a5a8a" stroke-width="1" opacity=".4"/>
+      <line x1="80" y1="60" x2="80" y2="68" stroke="#1a5a8a" stroke-width="1" opacity=".4"/>
+      <line x1="112" y1="60" x2="112" y2="68" stroke="#1a5a8a" stroke-width="1" opacity=".4"/>
+      <line x1="144" y1="60" x2="144" y2="68" stroke="#1a5a8a" stroke-width="1" opacity=".4"/>
+      <line x1="176" y1="60" x2="176" y2="68" stroke="#1a5a8a" stroke-width="1" opacity=".4"/>
+      <line x1="208" y1="60" x2="208" y2="68" stroke="#1a5a8a" stroke-width="1" opacity=".4"/>
+      <line x1="240" y1="60" x2="240" y2="68" stroke="#1a5a8a" stroke-width="1" opacity=".4"/>
+      <!-- display temperatura -->
+      <rect x="20" y="12" width="80" height="36" rx="6" fill="#1a5a8a" opacity=".6"/>
+      <rect x="30" y="20" width="30" height="20" rx="3" fill="#67B8F0" opacity=".35"/>
+      <!-- botones -->
+      <circle cx="130" cy="28" r="10" fill="#1a5a8a" opacity=".5"/>
+      <circle cx="156" cy="28" r="10" fill="#1a5a8a" opacity=".5"/>
+      <circle cx="182" cy="28" r="10" fill="#1a5a8a" opacity=".5"/>
+      <!-- luz LED -->
+      <circle cx="245" cy="28" r="6" fill="#67B8F0" opacity=".6"/>
+    </g>
+
+    <!-- ═══ MICROONDAS (derecha centro) ═══ -->
+    <g transform="translate(980,120)">
+      <!-- cuerpo -->
+      <rect x="0" y="0" width="240" height="170" rx="12" fill="#3A90CC" stroke="#2266a0" stroke-width="2"/>
+      <!-- ventana/puerta -->
+      <rect x="12" y="12" width="160" height="146" rx="8" fill="#2266a0" stroke="#1a5a8a" stroke-width="1.5"/>
+      <!-- interior microondas -->
+      <rect x="18" y="18" width="148" height="134" rx="6" fill="#1a5a8a" opacity=".4"/>
+      <!-- plato giratorio -->
+      <circle cx="92" cy="85" r="48" fill="none" stroke="#2266a0" stroke-width="2" opacity=".6"/>
+      <circle cx="92" cy="85" r="36" fill="#2266a0" opacity=".3"/>
+      <!-- panel lateral de control -->
+      <rect x="180" y="12" width="48" height="146" rx="0" fill="#2266a0" opacity=".5"/>
+      <!-- perilla -->
+      <circle cx="204" cy="120" r="18" fill="#1a5a8a" stroke="#fff" stroke-width="1" opacity=".6"/>
+      <circle cx="204" cy="120" r="8" fill="#2266a0" opacity=".5"/>
+      <!-- display -->
+      <rect x="184" y="16" width="40" height="22" rx="3" fill="#1a5a8a" opacity=".7"/>
+      <rect x="188" y="20" width="14" height="14" rx="2" fill="#67B8F0" opacity=".4"/>
+      <!-- botones panel -->
+      <rect x="186" y="46" width="32" height="8" rx="3" fill="#1a5a8a" opacity=".4"/>
+      <rect x="186" y="62" width="32" height="8" rx="3" fill="#1a5a8a" opacity=".4"/>
+      <rect x="186" y="78" width="32" height="8" rx="3" fill="#1a5a8a" opacity=".4"/>
+      <rect x="186" y="94" width="32" height="8" rx="3" fill="#1a5a8a" opacity=".4"/>
+      <!-- manija puerta -->
+      <rect x="164" y="60" width="10" height="60" rx="5" fill="#67B8F0" opacity=".4"/>
+    </g>
+
+    <!-- ═══ COCINA / HORNO (derecha abajo) ═══ -->
+    <g transform="translate(1060,380)">
+      <!-- cuerpo -->
+      <rect x="0" y="0" width="200" height="260" rx="12" fill="#2A7FBF" stroke="#1a5a8a" stroke-width="2"/>
+      <!-- panel quemadores -->
+      <rect x="10" y="10" width="180" height="120" rx="8" fill="#2266a0" opacity=".7"/>
+      <!-- quemadores -->
+      <circle cx="50" cy="50" r="24" fill="none" stroke="#1a5a8a" stroke-width="3" opacity=".7"/>
+      <circle cx="50" cy="50" r="14" fill="none" stroke="#1a5a8a" stroke-width="2" opacity=".5"/>
+      <circle cx="50" cy="50" r="5" fill="#1a5a8a" opacity=".6"/>
+      <circle cx="150" cy="50" r="24" fill="none" stroke="#1a5a8a" stroke-width="3" opacity=".7"/>
+      <circle cx="150" cy="50" r="14" fill="none" stroke="#1a5a8a" stroke-width="2" opacity=".5"/>
+      <circle cx="150" cy="50" r="5" fill="#1a5a8a" opacity=".6"/>
+      <circle cx="50" cy="105" r="18" fill="none" stroke="#1a5a8a" stroke-width="2.5" opacity=".6"/>
+      <circle cx="50" cy="105" r="10" fill="none" stroke="#1a5a8a" stroke-width="1.5" opacity=".4"/>
+      <circle cx="150" cy="105" r="18" fill="none" stroke="#1a5a8a" stroke-width="2.5" opacity=".6"/>
+      <circle cx="150" cy="105" r="10" fill="none" stroke="#1a5a8a" stroke-width="1.5" opacity=".4"/>
+      <!-- puerta horno -->
+      <rect x="10" y="140" width="180" height="110" rx="6" fill="#2266a0" stroke="#1a5a8a" stroke-width="1.5"/>
+      <!-- vidrio puerta -->
+      <rect x="18" y="148" width="164" height="80" rx="4" fill="#1a5a8a" opacity=".35"/>
+      <!-- manija puerta horno -->
+      <rect x="30" y="238" width="140" height="8" rx="4" fill="#67B8F0" opacity=".4"/>
+      <!-- perillas -->
+      <circle cx="38" cy="128" r="10" fill="#1a5a8a" stroke="#fff" stroke-width="1" opacity=".6"/>
+      <circle cx="72" cy="128" r="10" fill="#1a5a8a" stroke="#fff" stroke-width="1" opacity=".6"/>
+      <circle cx="128" cy="128" r="10" fill="#1a5a8a" stroke="#fff" stroke-width="1" opacity=".6"/>
+      <circle cx="162" cy="128" r="10" fill="#1a5a8a" stroke="#fff" stroke-width="1" opacity=".6"/>
+    </g>
+
+    <!-- ═══ CABLES / ONDAS de conexión ═══ -->
+    <!-- onda WiFi / señal decorativa -->
+    <g transform="translate(560,560)" opacity=".25">
+      <path d="M0 40 Q60-20 120 40" fill="none" stroke="#2A7FBF" stroke-width="3" stroke-linecap="round"/>
+      <path d="M20 40 Q60 0 100 40" fill="none" stroke="#2A7FBF" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="60" cy="40" r="6" fill="#2A7FBF"/>
+    </g>
+    <g transform="translate(900,500)" opacity=".2">
+      <path d="M0 40 Q60-20 120 40" fill="none" stroke="#2A7FBF" stroke-width="3" stroke-linecap="round"/>
+      <path d="M20 40 Q60 0 100 40" fill="none" stroke="#2A7FBF" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="60" cy="40" r="6" fill="#2A7FBF"/>
+    </g>
+
+    <!-- ═══ TORNILLO / ícono herramienta decorativo ═══ -->
+    <g transform="translate(500,500)" opacity=".2">
+      <rect x="0" y="0" width="14" height="50" rx="4" fill="#2A7FBF"/>
+      <rect x="-6" y="0" width="26" height="12" rx="3" fill="#2A7FBF"/>
+      <line x1="7" y1="12" x2="7" y2="50" stroke="#1a5a8a" stroke-width="2"/>
+    </g>
+
+  </svg>
+
+  <span class="hero-badge">⚡ Servicio técnico especializado</span>
+  <h1>Tu hogar en perfectas<br/><em>condiciones</em>, siempre.</h1>
+  <p>Reparamos aires acondicionados, heladeras, lavarropas, microondas y más. Rapidez, garantía y profesionalismo en cada visita.</p>
+  <div class="hero-cta">
+    <!-- 📱 Reemplazá 541160473157 con tu número de WhatsApp (código de país + número, sin +) -->
+    <a href="https://wa.me/5491160473157?text=Hola%20ServiAlvarez%2C%20necesito%20un%20servicio%20t%C3%A9cnico" class="btn-primary" target="_blank">Solicitá un turno</a>
+    <a href="#servicios" class="btn-ghost">Ver servicios</a>
+  </div>
+</section>
+
+<!-- ── SERVICES ── -->
+<section class="services" id="servicios">
+  <div class="section-title">
+    <small>Lo que hacemos</small>
+    <h2>Nuestros servicios</h2>
+  </div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">❄️</div>
+      <h3>Aire Acondicionado</h3>
+      <p>Instalación, mantenimiento preventivo, recarga de gas y reparación de todas las marcas y modelos.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🧊</div>
+      <h3>Heladeras & Freezers</h3>
+      <p>Diagnóstico y reparación de compresor, termostato, sellado de puertas, carga de gas y mucho más.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🫧</div>
+      <h3>Lavarropas</h3>
+      <p>Reparación de motores, bombas, tableros electrónicos y programadoras. Servicio a domicilio.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📡</div>
+      <h3>Microondas</h3>
+      <p>Reemplazo de magnetrón, plato giratorio, panel de control y toda la electrónica interna.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🍳</div>
+      <h3>Cocinas & Hornos</h3>
+      <p>Reparación de quemadores, resistencias, termostatos y sistemas de encendido eléctrico.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔧</div>
+      <h3>Electrónica General</h3>
+      <p>Diagnóstico y solución de fallas eléctricas y electrónicas en todo tipo de electrodomésticos del hogar.</p>
+    </div>
+  </div>
+  <div class="gallery-card-wrapper">
+    <div class="card-gallery" onclick="openGallery()">
+      <div class="card-icon">📸</div>
+      <h3>Galería de Trabajos</h3>
+      <p>Mirá ejemplos reales de nuestras reparaciones. Antes y después, trabajos finalizados con calidad garantizada.</p>
+      <span class="gallery-hint">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Ver galería &rarr;
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- MODAL GALERIA -->
+<div class="gallery-overlay" id="galleryOverlay" onclick="handleOverlayClick(event)">
+  <div class="gallery-modal">
+    <div class="gallery-header">
+      <div>
+        <h3>📸 Galería de Trabajos</h3>
+        <p>Las fotos se guardan en este dispositivo</p>
+      </div>
+      <button class="btn-close-gallery" onclick="closeGallery()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="gallery-body">
+      <!-- ACA SE COMENTA EL DROP UPLOAD PARA SUBIR LAS FOTOS ASI NO SUBEN FOTOS CUALQUIERA
+      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('gallery-file-input').click()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <p><strong>Hacé clic para agregar fotos</strong><br/>o arrastrá las imágenes acá</p>
+      </div>
+      -->
+      <input type="file" id="gallery-file-input" accept="image/*" multiple onchange="handleFiles(this.files)">
+      <div class="gallery-grid" id="galleryGrid">
+        <div class="gallery-empty" id="galleryEmpty">
+          <div class="gallery-item">
+            <img src="https://ibb.co/TBF1CJJg" alt="Trabajo 1" onclick="openLightbox(0)">
+            <button class="gallery-item-del" onclick="deleteImage(0)" title="Eliminar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currenColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6l-1 14H6L5 6"></path>
+                <path d="M10 11v6M14 11v6"></path>
+                <path d="M9 6V4h6v2"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="gallery-item">
+            <img src="https://ibb.co/fzjn0hsY" alt="Trabajo 2" onclick="openLightbox(0)">
+            <button class="gallery-item-del" onclick="deleteImage(0)" title="Eliminar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currenColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6l-1 14H6L5 6"></path>
+                <path d="M10 11v6M14 11v6"></path>
+                <path d="M9 6V4h6v2"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="gallery-item">
+            <img src="https://ibb.co/fzjn0hsY" alt="Trabajo 3" onclick="openLightbox(0)">
+            <button class="gallery-item-del" onclick="deleteImage(0)" title="Eliminar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currenColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6l-1 14H6L5 6"></path>
+                <path d="M10 11v6M14 11v6"></path>
+                <path d="M9 6V4h6v2"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="gallery-item">
+            <img src="https://ibb.co/fzjn0hsY" alt="Trabajo 4" onclick="openLightbox(0)">
+            <button class="gallery-item-del" onclick="deleteImage(0)" title="Eliminar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currenColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6l-1 14H6L5 6"></path>
+                <path d="M10 11v6M14 11v6"></path>
+                <path d="M9 6V4h6v2"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="gallery-item">
+            <img src="https://ibb.co/fzjn0hsY" alt="Trabajo 5" onclick="openLightbox(0)">
+            <button class="gallery-item-del" onclick="deleteImage(0)" title="Eliminar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currenColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6l-1 14H6L5 6"></path>
+                <path d="M10 11v6M14 11v6"></path>
+                <path d="M9 6V4h6v2"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="gallery-item">
+            <img src="https://ibb.co/fzjn0hsY" alt="Trabajo 6" onclick="openLightbox(0)">
+            <button class="gallery-item-del" onclick="deleteImage(0)" title="Eliminar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currenColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6l-1 14H6L5 6"></path>
+                <path d="M10 11v6M14 11v6"></path>
+                <path d="M9 6V4h6v2"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="gallery-item">
+            <img src="https://ibb.co/fzjn0hsY" alt="Trabajo 7" onclick="openLightbox(0)">
+            <button class="gallery-item-del" onclick="deleteImage(0)" title="Eliminar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currenColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6l-1 14H6L5 6"></path>
+                <path d="M10 11v6M14 11v6"></path>
+                <path d="M9 6V4h6v2"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="gallery-item">
+            <img src="https://ibb.co/fzjn0hsY" alt="Trabajo 8" onclick="openLightbox(0)">
+            <button class="gallery-item-del" onclick="deleteImage(0)" title="Eliminar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currenColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6l-1 14H6L5 6"></path>
+                <path d="M10 11v6M14 11v6"></path>
+                <path d="M9 6V4h6v2"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="gallery-item">
+            <img src="https://ibb.co/fzjn0hsY" alt="Trabajo 9" onclick="openLightbox(0)">
+            <button class="gallery-item-del" onclick="deleteImage(0)" title="Eliminar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currenColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6l-1 14H6L5 6"></path>
+                <path d="M10 11v6M14 11v6"></path>
+                <path d="M9 6V4h6v2"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="gallery-item">
+            <img src="https://ibb.co/fzjn0hsY" alt="Trabajo 10" onclick="openLightbox(0)">
+            <button class="gallery-item-del" onclick="deleteImage(0)" title="Eliminar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currenColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6l-1 14H6L5 6"></path>
+                <path d="M10 11v6M14 11v6"></path>
+                <path d="M9 6V4h6v2"></path>
+              </svg>
+            </button>
+          </div>
+          <p>Todavía no hay fotos.<br/>Agregá tus primeros trabajos!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <button class="lightbox-nav prev" onclick="lightboxNav(-1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <img id="lightboxImg" src="" alt="Foto de trabajo">
+  <button class="lightbox-nav next" onclick="lightboxNav(1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+  <div class="lightbox-counter" id="lightboxCounter"></div>
+</div>
+
+<script>
+  let galleryImages = JSON.parse(localStorage.getItem('servialvarez_gallery') || '[]');
+  let lightboxIndex = 0;
+
+  function saveGallery() {
+    try { localStorage.setItem('servialvarez_gallery', JSON.stringify(galleryImages)); } catch(e) {}
+  }
+
+  function renderGallery() {
+    const grid = document.getElementById('galleryGrid');
+    const empty = document.getElementById('galleryEmpty');
+    grid.querySelectorAll('.gallery-item').forEach(el => el.remove());
+    if (galleryImages.length === 0) { empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    galleryImages.forEach((src, i) => {
+      const item = document.createElement('div');
+      item.className = 'gallery-item';
+      item.innerHTML = '<img src="' + src + '" alt="Trabajo ' + (i+1) + '" onclick="openLightbox(' + i + ')">' +
+        '<button class="gallery-item-del" onclick="deleteImage(' + i + ')" title="Eliminar">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>';
+      grid.appendChild(item);
+    });
+  }
+
+  function handleFiles(files) {
+    Array.from(files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        galleryImages.push(e.target.result);
+        saveGallery();
+        renderGallery();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function deleteImage(index) {
+    galleryImages.splice(index, 1);
+    saveGallery();
+    renderGallery();
+  }
+
+  function openGallery() {
+    document.getElementById('galleryOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    renderGallery();
+  }
+
+  function closeGallery() {
+    document.getElementById('galleryOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('galleryOverlay')) closeGallery();
+  }
+
+  function openLightbox(index) {
+    lightboxIndex = index;
+    updateLightbox();
+    document.getElementById('lightbox').classList.add('open');
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+
+  function updateLightbox() {
+    document.getElementById('lightboxImg').src = galleryImages[lightboxIndex];
+    document.getElementById('lightboxCounter').textContent = (lightboxIndex + 1) + ' / ' + galleryImages.length;
+  }
+
+  function lightboxNav(dir) {
+    lightboxIndex = (lightboxIndex + dir + galleryImages.length) % galleryImages.length;
+    updateLightbox();
+  }
+
+  var zone = document.getElementById('uploadZone');
+  zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.style.borderColor = 'var(--accent)'; });
+  zone.addEventListener('dragleave', function() { zone.style.borderColor = ''; });
+  zone.addEventListener('drop', function(e) { e.preventDefault(); zone.style.borderColor = ''; handleFiles(e.dataTransfer.files); });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { closeLightbox(); closeGallery(); }
+    if (document.getElementById('lightbox').classList.contains('open')) {
+      if (e.key === 'ArrowLeft') lightboxNav(-1);
+      if (e.key === 'ArrowRight') lightboxNav(1);
+    }
+  });
+</script>
+
+<!-- ── WHY US ── -->
+<section class="why" id="nosotros">
+  <div class="why-inner">
+    <div class="why-text">
+      <div class="section-title" style="text-align:left;margin-bottom:1.5rem;">
+        <small>¿Por qué elegirnos?</small>
+      </div>
+      <h2>Experiencia que<br/>se nota.</h2>
+      <p>En ServiAlvarez llevamos años brindando soluciones confiables para el hogar. Nuestro equipo técnico está capacitado y actualizado en las últimas tecnologías.</p>
+      <p>Trabajamos con repuestos de calidad y garantizamos cada reparación. Tu satisfacción es nuestra prioridad.</p>
+      <a href="https://wa.me/541160473157?text=Hola%20ServiAlvarez%2C%20quiero%20hacer%20una%20consulta" class="btn-primary" style="display:inline-block;margin-top:1.2rem;" target="_blank">Consultá gratis</a>
+    </div>
+    <div class="why-stats">
+      <div class="stat-card"><div class="num">+500</div><div class="label">Clientes satisfechos</div></div>
+      <div class="stat-card"><div class="num">10+</div><div class="label">Años de experiencia</div></div>
+      <div class="stat-card"><div class="num">24hs</div><div class="label">Respuesta rápida</div></div>
+      <div class="stat-card"><div class="num">100%</div><div class="label">Garantía de servicio</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROCESS ── -->
+<section class="process" id="proceso">
+  <div class="section-title">
+    <small>Simple y rápido</small>
+    <h2>¿Cómo funciona?</h2>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Contactanos</h3>
+      <p>Escribinos por WhatsApp, Instagram o Facebook y contanos el problema con tu electrodoméstico.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>Coordinamos la visita</h3>
+      <p>Acordamos el día y horario que mejor te convenga. Llegamos puntual a tu domicilio.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>Diagnóstico y presupuesto</h3>
+      <p>Revisamos el equipo y te damos un presupuesto claro y sin sorpresas antes de empezar.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <h3>¡Listo!</h3>
+      <p>Reparamos el equipo con garantía. Tu electrodoméstico vuelve a funcionar como nuevo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer id="contacto">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Servi<span>Alvarez</span></div>
+      <p>Servicio técnico de electrodomésticos con más de 10 años de experiencia. Soluciones rápidas, confiables y con garantía.</p>
+    </div>
+    <div>
+      <h4>Servicios</h4>
+      <ul>
+        <li><a href="#servicios">Aire Acondicionado</a></li>
+        <li><a href="#servicios">Heladeras</a></li>
+        <li><a href="#servicios">Lavarropas</a></li>
+        <li><a href="#servicios">Microondas</a></li>
+        <li><a href="#servicios">Cocinas</a></li>
+      </ul>
+    </div>
+    <div class="footer-contact">
+      <h4>Contacto</h4>
+      <!-- 📱 1160473157-->
+      <p>📱 <a href="https://wa.me/5491160473157">+541160473157</a></p>
+      <!-- 📧 Reemplazá con tu email real -->
+      <p>📧 <a href="mailto:servialvarez@gmail.com">luischuecas@gmail.com</a></p>
+      <!-- 📍 Reemplazá con tu zona de cobertura -->
+      <p>📍 Zonas Ezpeleta, Quilmes, Berazatequi, Bernal y alrededores</p>
+      <p>🕐 Lun–Sáb, 7:00 – 20:00</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 ServiAlvarez · Todos los derechos reservados</p>
+  </div>
+</footer>
+
+<!-- ── FLOATING BUTTONS ── -->
+<div class="fab-group">
+
+  <!-- FACEBOOK — reemplazá la URL con tu página real -->
+  <!--
+  <a href="https://www.facebook.com/TuPaginaFacebook" class="fab fab-fb" target="_blank" aria-label="Facebook">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
+    </svg>
+  </a>
+  -->
+  <!-- INSTAGRAM — reemplazá la URL con tu perfil real -->
+  <!--
+  <a href="https://www.instagram.com/TuPerfilInstagram" class="fab fab-ig" target="_blank" aria-label="Instagram">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+    </svg>
+  </a>
+  -->
+
+  <!-- WHATSAPP — reemplazá el número -->
+  <a href="https://wa.me/5491160473157?text=Hola%20ServiAlvarez%2C%20necesito%20un%20servicio%20t%C3%A9cnico" class="fab fab-wa" target="_blank" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </a>
+
+</div>
+
+</body>
+</html>

@@ -764,25 +764,16 @@
     <div class="gallery-header">
       <div>
         <h3>📸 Galería de Trabajos</h3>
-        <p>Las fotos se guardan en este dispositivo</p>
+        <p>Trabajos realizados por ServiAlvarez</p>
       </div>
       <button class="btn-close-gallery" onclick="closeGallery()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
     <div class="gallery-body">
-       /*ACA SE COMENTA EL DROP UPLOAD PARA SUBIR LAS FOTOS ASI NO SUBEN FOTOS CUALQUIERA*/
-      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('gallery-file-input').click()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-        <p><strong>Hacé clic para agregar fotos</strong><br/>o arrastrá las imágenes acá</p>
-      </div>
-      
-      <input type="file" id="gallery-file-input" accept="image/*" multiple onchange="handleFiles(this.files)">
       <div class="gallery-grid" id="galleryGrid">
         <div class="gallery-empty" id="galleryEmpty">
-          
-          </div>
-          <p>Todavía no hay fotos.<br/>Agregá tus primeros trabajos!</p>
+          <p>Próximamente fotos de nuestros trabajos.</p>
         </div>
       </div>
     </div>
@@ -805,12 +796,16 @@
 </div>
 
 <script>
-  let galleryImages = JSON.parse(localStorage.getItem('servialvarez_gallery') || '[]');
+  // ── GALERÍA: agregá acá las rutas de tus fotos ──
+  // Subí tus fotos a la carpeta img/galeria/ en tu repositorio de GitHub
+  // y agregá cada nombre de archivo en esta lista.
+  let galleryImages = [
+    'img/galeria/foto1.jpg',
+    'img/galeria/foto2.jpg',
+    'img/galeria/foto3.jpg'
+    // Agregá más líneas acá: 'img/galeria/foto4.jpg',
+  ];
   let lightboxIndex = 0;
-
-  function saveGallery() {
-    try { localStorage.setItem('servialvarez_gallery', JSON.stringify(galleryImages)); } catch(e) {}
-  }
 
   function renderGallery() {
     const grid = document.getElementById('galleryGrid');
@@ -821,29 +816,9 @@
     galleryImages.forEach((src, i) => {
       const item = document.createElement('div');
       item.className = 'gallery-item';
-      item.innerHTML = '<img src="' + src + '" alt="Trabajo ' + (i+1) + '" onclick="openLightbox(' + i + ')">' +
-        '<button class="gallery-item-del" onclick="deleteImage(' + i + ')" title="Eliminar">' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>';
+      item.innerHTML = '<img src="' + src + '" alt="Trabajo ' + (i+1) + '" onclick="openLightbox(' + i + ')">';
       grid.appendChild(item);
     });
-  }
-
-  function handleFiles(files) {
-    Array.from(files).forEach(file => {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        galleryImages.push(e.target.result);
-        saveGallery();
-        renderGallery();
-      };
-      reader.readAsDataURL(file);
-    });
-  }
-
-  function deleteImage(index) {
-    galleryImages.splice(index, 1);
-    saveGallery();
-    renderGallery();
   }
 
   function openGallery() {
@@ -880,11 +855,6 @@
     lightboxIndex = (lightboxIndex + dir + galleryImages.length) % galleryImages.length;
     updateLightbox();
   }
-
-  var zone = document.getElementById('uploadZone');
-  zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.style.borderColor = 'var(--accent)'; });
-  zone.addEventListener('dragleave', function() { zone.style.borderColor = ''; });
-  zone.addEventListener('drop', function(e) { e.preventDefault(); zone.style.borderColor = ''; handleFiles(e.dataTransfer.files); });
 
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') { closeLightbox(); closeGallery(); }
